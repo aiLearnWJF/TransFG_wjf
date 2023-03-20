@@ -263,17 +263,17 @@ class Encoder(nn.Module):
             hidden_states, weights = layer(hidden_states)
             attn_weights.append(weights)            
         part_num, part_inx = self.part_select(attn_weights)
+        import pdb;pdb.set_trace()
         part_inx = part_inx + 1
         parts = []
         B, num = part_inx.shape
         for i in range(B):
             parts.append(hidden_states[i, part_inx[i,:]])
-        # print("wjf:parts:",parts,parts[0].shape,part_inx)
-
         parts = torch.stack(parts).squeeze(1)
         concat = torch.cat((hidden_states[:,0].unsqueeze(1), parts), dim=1)
         part_states, part_weights = self.part_layer(concat)
         part_encoded = self.part_norm(part_states)   
+        import pdb;pdb.set_trace()
 
         return part_encoded
 
